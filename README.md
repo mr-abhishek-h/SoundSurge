@@ -1,6 +1,6 @@
 # Sound Surge
 
-![Sound Surge Logo]([link_to_logo.png](https://www.flaticon.com/free-icon/folder_7000913?term=audio&page=1&position=16&origin=tag&related_id=7000913)) <!-- Replace 'link_to_logo.png' with your logo image link -->
+![Sound Surge Logo]([link_to_logo.png]([https://www.flaticon.com/free-icon/folder_7000913?term=audio&page=1&position=16&origin=tag&related_id=7000913](https://github.com/mr-abhishek-h/SoundSurge/blob/main/images/logo.png))) <!-- Replace 'link_to_logo.png' with your logo image link -->
 
 Welcome to Sound Surge! 🎵✨
 
