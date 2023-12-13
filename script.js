@@ -21,9 +21,26 @@ document.addEventListener('DOMContentLoaded', function () {
       file: 'audio/dancingwithyourghost.mp3'
     },
     {
-      title: 'Beat',
-      file: 'audio/beat.mp3'
+      title: 'Audio 1',
+      file: 'audio/music-1.mp3'
     },
+    {
+      title: 'Audio 2',
+      file: 'audio/music-2.mp3'
+    },
+    {
+      title: 'Audio 3',
+      file: 'audio/music-3.mp3'
+    },
+    {
+      title: 'Audio 4',
+      file: 'audio/music-4.mp3'
+    },
+    {
+      title: 'Audio 5',
+      file: 'audio/music-5.mp3'
+    },
+  
     // Add more songs here...
   ];
 
