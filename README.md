@@ -30,7 +30,7 @@ Sound Surge is an immersive music player web app that takes your listening exper
 
 ## Getting Started
 
-To experience Sound Surge, simply navigate to [Sound Surge](https://mr-abhishek-h.github.io/SoundSurge/#){:target="_blank"}..
+To experience Sound Surge, simply navigate to [Sound Surge](https://mr-abhishek-h.github.io/SoundSurge/#){:target="_blank"}.
 
 ## Installation
 
