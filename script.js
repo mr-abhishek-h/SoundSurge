@@ -3,48 +3,39 @@ document.addEventListener('DOMContentLoaded', function () {
   const progressBar = document.querySelector('.prog-bar-inner');
   const playButton = document.querySelector('.button-lg');
   const skipBackButton = document.querySelector('.button-md');
-  const skipForwardButton = document.querySelector('.button-fd'); 
-  const randomButton = document.querySelector('.button-sm'); 
+  const skipForwardButton = document.querySelector('.button-fd');
+  const randomButton = document.querySelector('.button-sm');
   const repeatButton = document.querySelector('.button-sm.repeat');
-  const audio = new Audio(); 
+  const audio = new Audio();
+  const songNameDisplay = document.querySelector('.song-name');
+  const canvas = document.getElementById('soundVisualizer');
+  const ctx = canvas.getContext('2d');
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const analyser = audioContext.createAnalyser();
+  const audioSource = audioContext.createMediaElementSource(audio);
+
   let isPlaying = false;
   let currentSongIndex = 0;
   let isRepeat = false;
   let isRandom = false;
   const songList = [
-    {
-      title: 'Papa Ki Pari',
-      file: 'audio/Papa Ki Pari.mp3'
-    },
-    {
-      title: 'Dancing With Your Ghost',
-      file: 'audio/dancingwithyourghost.mp3'
-    },
-    {
-      title: 'Audio 1',
-      file: 'audio/music-1.mp3'
-    },
-    {
-      title: 'Audio 2',
-      file: 'audio/music-2.mp3'
-    },
-    {
-      title: 'Audio 3',
-      file: 'audio/music-3.mp3'
-    },
-    {
-      title: 'Audio 4',
-      file: 'audio/music-4.mp3'
-    },
-    {
-      title: 'Audio 5',
-      file: 'audio/music-5.mp3'
-    },
-  
+    { title: 'Papa Ki Pari', file: 'audio/Papa Ki Pari.mp3' },
+    { title: 'Dancing With Your Ghost', file: 'audio/dancingwithyourghost.mp3' },
+    { title: 'Audio 1', file: 'audio/music-1.mp3' },
+    { title: 'Audio 2', file: 'audio/music-2.mp3' },
+    { title: 'Audio 3', file: 'audio/music-3.mp3' },
+    { title: 'Audio 4', file: 'audio/music-4.mp3' },
+    { title: 'Audio 5', file: 'audio/music-5.mp3' },
     // Add more songs here...
   ];
 
-  const songNameDisplay = document.querySelector('.song-name');
+  audioSource.connect(analyser);
+  audioSource.connect(audioContext.destination);
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+  analyser.fftSize = 256;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
 
   function loadSong(index) {
     currentSongIndex = index;
@@ -54,26 +45,21 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function playAudio() {
-    audio.play();
-    playButton.querySelector('i').classList.remove('fa-play');
-    playButton.querySelector('i').classList.add('fa-pause');
-    drawSoundVisualizer();
-    isPlaying = true;
+    audio.play().then(() => {
+      playButton.querySelector('i').classList.replace('fa-play', 'fa-pause');
+      drawSoundVisualizer();
+      isPlaying = true;
+    }).catch(error => console.error('Error playing audio:', error));
   }
 
   function pauseAudio() {
     audio.pause();
-    playButton.querySelector('i').classList.remove('fa-pause');
-    playButton.querySelector('i').classList.add('fa-play');
+    playButton.querySelector('i').classList.replace('fa-pause', 'fa-play');
     isPlaying = false;
   }
 
   function togglePlay() {
-    if (isPlaying) {
-      pauseAudio();
-    } else {
-      playAudio();
-    }
+    isPlaying ? pauseAudio() : playAudio();
   }
 
   function skipBack() {
@@ -84,27 +70,19 @@ document.addEventListener('DOMContentLoaded', function () {
       audio.currentTime = 0;
     }
   }
-  
+
   function skipForward() {
     currentSongIndex = (currentSongIndex + 1) % songList.length;
     loadSong(currentSongIndex);
   }
 
-  function playRandom() {
-    isRandom = !isRandom; // Toggle the random flag
-  
-    if (isRandom) {
-      loadRandomSong(); // Load a random song initially
-      const icon = randomButton.querySelector('i');
-      icon.classList.remove('fa-random');
-      icon.classList.add('fa-exchange-alt');
-    } else {
-      const icon = randomButton.querySelector('i');
-      icon.classList.remove('fa-exchange-alt');
-      icon.classList.add('fa-random');
-    }
+  function toggleRandom() {
+    isRandom = !isRandom;
+    randomButton.querySelector('i').classList.toggle('fa-exchange-alt', isRandom);
+    randomButton.querySelector('i').classList.toggle('fa-random', !isRandom);
+    if (isRandom) loadRandomSong();
   }
-  
+
   function loadRandomSong() {
     if (isRandom) {
       const randomIndex = Math.floor(Math.random() * songList.length);
@@ -113,91 +91,53 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function toggleRepeat() {
-    isRepeat = !isRepeat; 
+    isRepeat = !isRepeat;
     audio.loop = isRepeat;
-  
-    const icon = repeatButton.querySelector('i');
-
-    if (isRepeat) {
-      icon.classList.remove('fa-repeat');
-      icon.classList.add('fa-times');
-    } else {
-      icon.classList.remove('fa-times');
-      icon.classList.add('fa-repeat');
-    }
+    repeatButton.querySelector('i').classList.toggle('fa-times', isRepeat);
+    repeatButton.querySelector('i').classList.toggle('fa-repeat', !isRepeat);
   }
-  
-  playButton.addEventListener('click', togglePlay);
-  skipBackButton.addEventListener('click', skipBack);
-  skipForwardButton.addEventListener('click', skipForward);
-  randomButton.addEventListener('click', playRandom);
-  repeatButton.addEventListener('click', toggleRepeat);
 
-  audio.addEventListener('ended', function() {
-    isPlaying = false;
-    playButton.querySelector('i').classList.remove('fa-pause');
-    playButton.querySelector('i').classList.add('fa-play');
-    songNameDisplay.textContent = 'SoundSurge';
-    progressBar.style.width = '0%';
-  
-    if (isRandom) {
-      loadRandomSong(); // If random play is on, load the next random song
-    } else {
-      currentSongIndex = (currentSongIndex + 1) % songList.length;
-      loadSong(currentSongIndex);
-    }
-  });
-  
   function updateProgressBar() {
-    const duration = audio.duration;
-    const currentTime = audio.currentTime;
-    const progress = (currentTime / duration) * 100;
-  
-    progressBar.style.width = progress + '%';
+    const progress = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = `${progress}%`;
   }
-  
-  setInterval(updateProgressBar, 500);
-
-  audio.addEventListener('timeupdate', updateProgressBar);
-  
-  // Sound Visualizer
-  const canvas = document.getElementById('soundVisualizer');
-  const ctx = canvas.getContext('2d');
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  const analyser = audioContext.createAnalyser();
-  const audioSource = audioContext.createMediaElementSource(audio);
-
-  audioSource.connect(analyser);
-  audioSource.connect(audioContext.destination);
-
-  canvas.width = canvas.clientWidth;
-  canvas.height = canvas.clientHeight;
-
-  analyser.fftSize = 256;
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
 
   function drawSoundVisualizer() {
     analyser.getByteFrequencyData(dataArray);
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     const barWidth = (canvas.width / bufferLength) * 2.5;
     let posX = 0;
 
     for (let i = 0; i < bufferLength; i++) {
-      const barHeight = dataArray[i] * 1;
+      const barHeight = dataArray[i];
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.93)'); // Start color
-      gradient.addColorStop(1, 'rgb(63, 61, 61)'); // End color
-  
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.93)');
+      gradient.addColorStop(1, 'rgb(63, 61, 61)');
+
       ctx.fillStyle = gradient;
       ctx.fillRect(posX, canvas.height - barHeight / 2, barWidth, barHeight);
-  
       posX += barWidth + 1;
     }
-    requestAnimationFrame(drawSoundVisualizer);
+
+    if (isPlaying) {
+      requestAnimationFrame(drawSoundVisualizer);
+    }
   }
 
-  audio.play();
-  drawSoundVisualizer();
+  playButton.addEventListener('click', togglePlay);
+  skipBackButton.addEventListener('click', skipBack);
+  skipForwardButton.addEventListener('click', skipForward);
+  randomButton.addEventListener('click', toggleRandom);
+  repeatButton.addEventListener('click', toggleRepeat);
+  audio.addEventListener('timeupdate', updateProgressBar);
+  audio.addEventListener('ended', () => {
+    isPlaying = false;
+    playButton.querySelector('i').classList.replace('fa-pause', 'fa-play');
+    songNameDisplay.textContent = 'SoundSurge';
+    progressBar.style.width = '0%';
+    isRandom ? loadRandomSong() : skipForward();
+  });
+
+  loadSong(currentSongIndex);
 });
