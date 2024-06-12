@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
   let isRepeat = false;
   let isRandom = false;
   const songList = [
-    { title: 'Papa Ki Pari', file: 'audio/Papa Ki Pari.mp3' },
-    { title: 'Dancing With Your Ghost', file: 'audio/dancingwithyourghost.mp3' },
-    { title: 'Audio 1', file: 'audio/music-1.mp3' },
-    { title: 'Audio 2', file: 'audio/music-2.mp3' },
-    { title: 'Audio 3', file: 'audio/music-3.mp3' },
-    { title: 'Audio 4', file: 'audio/music-4.mp3' },
-    { title: 'Audio 5', file: 'audio/music-5.mp3' },
+    { title: 'Papa Ki Pari', file: 'https://raw.githubusercontent.com/yourusername/yourrepository/main/audio/Papa%20Ki%20Pari.mp3' },
+    { title: 'Dancing With Your Ghost', file: 'https://raw.githubusercontent.com/yourusername/yourrepository/main/audio/dancingwithyourghost.mp3' },
+    { title: 'Audio 1', file: 'https://raw.githubusercontent.com/yourusername/yourrepository/main/audio/music-1.mp3' },
+    { title: 'Audio 2', file: 'https://raw.githubusercontent.com/yourusername/yourrepository/main/audio/music-2.mp3' },
+    { title: 'Audio 3', file: 'https://raw.githubusercontent.com/yourusername/yourrepository/main/audio/music-3.mp3' },
+    { title: 'Audio 4', file: 'https://raw.githubusercontent.com/yourusername/yourrepository/main/audio/music-4.mp3' },
+    { title: 'Audio 5', file: 'https://raw.githubusercontent.com/yourusername/yourrepository/main/audio/music-5.mp3' },
     // Add more songs here...
   ];
 
